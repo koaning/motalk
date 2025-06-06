@@ -20,8 +20,7 @@ import traitlets
 class WebkitSpeechToTextWidget(AnyWidget):
     # Define the widget's properties
     transcript = traitlets.Unicode("").tag(sync=True)
-    is_listening = traitlets.Bool(False).tag(sync=True)
-    trigger_listen = traitlets.Bool(False).tag(sync=True)
+    listening = traitlets.Bool(False).tag(sync=True)
 
     # HTML/JS for the frontend
     _esm = """
@@ -61,7 +60,7 @@ class WebkitSpeechToTextWidget(AnyWidget):
           status.textContent = 'Listening...';
           status.classList.add('active');
           button.textContent = 'Stop Listening';
-          model.set('is_listening', true);
+          model.set('listening', true);
           model.save_changes();
         };
 
@@ -89,7 +88,7 @@ class WebkitSpeechToTextWidget(AnyWidget):
           status.textContent = `Error: ${event.error}`;
           status.classList.remove('active');
           button.textContent = 'Start Listening';
-          model.set('is_listening', false);
+          model.set('listening', false);
           model.save_changes();
         };
 
@@ -97,7 +96,7 @@ class WebkitSpeechToTextWidget(AnyWidget):
           status.textContent = 'Not listening';
           status.classList.remove('active');
           button.textContent = 'Start Listening';
-          model.set('is_listening', false);
+          model.set('listening', false);
           model.save_changes();
         };
 
@@ -111,7 +110,7 @@ class WebkitSpeechToTextWidget(AnyWidget):
       const toggleListening = () => {
         if (!recognition) return;
 
-        const isListening = model.get('is_listening');
+        const isListening = model.get('listening');
         if (isListening) {
           recognition.stop();
         } else {
@@ -132,9 +131,9 @@ class WebkitSpeechToTextWidget(AnyWidget):
         }
       });
 
-      // Listen for direct changes to is_listening
-      model.on('change:is_listening', () => {
-        const isListening = model.get('is_listening');
+      // Listen for direct changes to listening
+      model.on('change:listening', () => {
+        const isListening = model.get('listening');
         const currentlyListening = recognition && status.textContent === 'Listening...';
 
         // Only take action if there's a mismatch between the model and current state
@@ -220,13 +219,3 @@ class WebkitSpeechToTextWidget(AnyWidget):
       font-weight: bold;
     }
     """
-
-    @property
-    def listening(self):
-        """Get the current listening state"""
-        return self.is_listening
-
-    @listening.setter
-    def listening(self, value):
-        """Set the listening state directly"""
-        self.is_listening = value

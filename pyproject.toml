@@ -29,15 +29,6 @@ dependencies = [
     "traitlets>=5.0",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.0",
-    "pytest-cov>=4.0",
-    "black>=22.0",
-    "flake8>=6.0",
-    "mypy>=1.0",
-]
-
 [project.urls]
 Homepage = "https://github.com/yourusername/motalk"
 Repository = "https://github.com/yourusername/motalk.git"
